@@ -7,6 +7,28 @@ function App() {
   const [pets, setPets] = useState([]);
   const [filters, setFilters] = useState({ type: "all" });
 
+  function handleChange(type) {
+    setFilters({type: `${type}`})
+  }
+
+  function handleFindPets() {
+
+    let url = "http://localhost:3001/pets"
+
+    if (filters.type !== "all") {
+      url = url + `?type=${filters.type}`
+    } 
+      fetch(url)
+      .then(r => r.json())
+      .then(data => setPets(data))
+    }
+
+    function handleAdopt(petId) {
+      const adoptedPet = pets.find( pet => pet.id === petId)
+      
+      console.log(adoptedPet)
+    }
+
   return (
     <div className="ui container">
       <header>
@@ -15,10 +37,10 @@ function App() {
       <div className="ui container">
         <div className="ui grid">
           <div className="four wide column">
-            <Filters />
+            <Filters onChangeType={handleChange} onFindPetsClick={handleFindPets} />
           </div>
           <div className="twelve wide column">
-            <PetBrowser />
+            <PetBrowser pets={pets} onAdoptPet={handleAdopt} />
           </div>
         </div>
       </div>
